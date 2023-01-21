@@ -1,16 +1,45 @@
 package main
 
 import (
+	//"bytes"
+	"encoding/json"
 	"fmt"
+	//"net/http"
 	"time"
 )
+
+
+type Person struct {
+    name string `json:"name"`
+    score  int    `json:"score"`
+}
+
 
 func main() {
 	url := "http://localhost:3000/questions"
 
+	var name string
+	fmt.Print("Enter your name : ")
+	fmt.Scanf("%s",&name);
+
+
+	data := Person{name: name}
+    jsonData, _ := json.Marshal(data)
+
+	fmt.Print(data); 
+	fmt.Print(jsonData); 
+
+
+	// _, err := http.Post("http://localhost:3000/user", "application/json", bytes.NewBuffer(jsonData));
+	// if err!=nil{
+	// 	fmt.Print("Something went wrong");
+	// }
+
+
+	
 	problems := questionPuller(url)
 
-	tobj := time.NewTimer(10 * time.Second * time.Duration(len(problems))) // Time for all the questions --> 1 question => 10 seconds
+	tobj := time.NewTimer(20*time.Duration(len(problems)) * time.Second) // Time for all the questions --> 1 question => 10 seconds
 
 	correctAns := 0
 ProblemLoop:
@@ -26,6 +55,8 @@ ProblemLoop:
 			fmt.Scanf("%s", &answer)
 			ansC <- answer
 		}()
+		
+		
 		select {
 		case <-tobj.C:
 			fmt.Println("\nTime Over !!! Your Quiz has been Submitted")
