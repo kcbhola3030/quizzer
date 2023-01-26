@@ -42,7 +42,14 @@ func main() {
 	fmt.Print(string(id))
 
 	problems := questionPuller(url)
-	tobj := time.NewTimer(20 * time.Second) // Time for all the questions --> 1 question => 10 seconds
+
+	plen := time.Duration(len(problems))
+	tobj := time.NewTimer(10 * plen * time.Second) // Time for all the questions --> 1 question => 10 seconds
+	
+	start := time.Now()
+
+
+
 
 	var correctAns int = 0
 ProblemLoop:
@@ -65,15 +72,19 @@ ProblemLoop:
 			break ProblemLoop
 		case iAns := <-ansC:
 			if iAns == problem.Answer {
-				correctAns++
+				correctAns = correctAns + 100
 			}
 			if i == len(problems)-1 {
 				fmt.Print("All Questions Submitted Successfully...:)\n ")
+				timeRemaining := float64(plen*10) - time.Since(start).Seconds()
+				
+				correctAns += int(timeRemaining)
 			}
 
 		}
 
 	}
+
 
 	var scnid string
 
