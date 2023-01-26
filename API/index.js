@@ -1,3 +1,4 @@
+const dotenv = require('dotenv').config();
 var importData = [
     {
         "id":"1",
@@ -24,16 +25,16 @@ var importData = [
         "explanation":"fnt is not a package"
     }
 ]
-let port = process.env.port || 5000;
+let port = process.env.PORT || 6000;
 
 const express = require("express");
 const mongoose = require("mongoose");
-const { findOne } = require("domutils");
+
 
 mongoose.set("strictQuery", true);
 
 try {
-  const connect = mongoose.connect("mongodb://localhost:27017/golang");
+  const connect = mongoose.connect(process.env.URL);
   console.log("db working");
 } catch (error) {
   console.log(error);
@@ -46,9 +47,10 @@ const User = mongoose.model("User", {
 
 const app = express();
 app.use(express.json());
+app.use(cors())
 
 app.get("/", (req, res) => {
-  res.send("Hello world");
+  res.send("Welcome to Meta");
 });
 
 app.get("/questions", (req, res) => {
@@ -65,7 +67,7 @@ app.post("/user", async (req, res) => {
     });
     await newUser.save();
     console.log({ _id: newUser.id });
-    res.status(200).json({ _id: newUser.id });
+    res.status(200).send(newUser.id);
     return;
   } catch (error) {
     res.status(400).send(error);
@@ -94,5 +96,5 @@ app.put("/updateUser", async (req, res) => {
 
 
 app.listen(port, () => {
-  console.log(`Eg app is listening on port http://localhost:5000`);
+  console.log(`ap listening ${port}`);  
 });
